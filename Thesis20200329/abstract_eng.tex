@@ -1,0 +1,60 @@
+% Abstract
+\thispagestyle{plain}
+\phantomsection
+\addcontentsline{toc}{chapter}{Abstract}
+
+\centerline{\zihao{3}\bfseries ABSTRACT}
+
+\linespread{1.4}\zihao{-4}
+\bigskip
+
+
+Due to the non-local nature of fractional derivatives,
+the fractional diffusion equations 
+ can be used to describe some abnormal diffusion phenomena in physics.
+Therefore, models based on fractional derivatives 
+have been increasingly used in the fields of scientific and engineering computing in recent years.
+But it is also because of the non-local nature of fractional derivatives,
+the coefficient matrix of the discrete linear system is often dense.
+When the scale of the problem is large,
+it brings great difficulty to compute the numerical solution of the problem.
+Fast algorithms for traditional integer-order differential equations
+are no longer applicable to fractional-order differential equations.
+In recent years,
+research on fast algorithms for fractional diffusion equations has received more and more attentions.
+
+The main contributions of this thesis are as follows:
+\begin{itemize}
+
+\item[(1)]
+We consider the numerical methods for the time-space fractional diffusion equations.
+Discretized by the Gr\"unwald difference method in time and the shifted Gr\"unwald difference method in space,
+the original problem was finally transformed into a large-scale system of algebraic linear equations.
+Its coefficient matrix can be expressed as a sum of two Kronecker products.
+\medskip
+
+\item[(2)]
+Based on the special structure of the coefficient matrix,
+we combine inversion method of Toeplitz matrix and
+propose a class of block diagonal preconditioner.
+The properties of the preconditioned coefficient matrix are studied.
+Numerical experiments show that
+when the time fractional derivative is small, such as not exceeding 0.5,
+the preconditioner has a good acceleration effect.
+\medskip
+
+\item[(3)]
+We observe that the coefficient matrix consists of two parts naturally,
+and each part has a special structure.
+Therefore, we propose a class of matrix splitting preconditioner 
+based on the idea of ​​alternating directions.
+Some theoretical results are presented. 
+In order to reduce the amount of workload, in the real applications, 
+we make use of the technique of circulant matrix approximation and
+inversion method of Toeplitz matrix.
+Numerical tests were carried out to show the performance of the two preconditioners.
+\end{itemize}
+
+\bigskip
+\noindent\textbf{\zihao{4} Keywords:}
+Time-space fractional diffusion equation, Inversion of Toeplitz matrix, Alternating direction iteration, Preconditioning 
