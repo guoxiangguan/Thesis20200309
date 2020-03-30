@@ -942,7 +942,7 @@ $$
 $T_{\beta}$ 是具有下 Hessenberg 形状的 Teoplitz 矩阵 \eqref{eqtb}.
 
 为了讨论方便, 我们将系数矩阵记为
-\begin{equation}
+\begin{equation}\label{eq:A}
   A \triangleq C \otimes I_N + I_M \otimes K.
 \end{equation}
 在已知 $C$ 和 $T_{\beta}$ 是 Toeplitz 矩阵的情况下,
@@ -963,23 +963,23 @@ $\bar{D}_-$ 为扩散系数矩阵 $D_-$ 的常数化对角矩阵的近似,
 \end{equation}
 我们记
 $$
-  \tilde{C}_2 = \tau (\bar{D}_+ s(T_{\beta}) + \bar{D}_- s(T_{\beta})^T).
+  \tilde{K} = \tau (\bar{D}_+ s(T_{\beta}) + \bar{D}_- s(T_{\beta})^T).
 $$
 因为 $s(T_{\beta})$ 是循环矩阵,
-而 $\bar{D}_+, \bar{D}_-$ 是常数对角矩阵, 故而 $\tilde{C}_2$ 仍然是一个循环矩阵.
+而 $\bar{D}_+, \bar{D}_-$ 是常数对角矩阵, 故而 $\tilde{K}$ 仍然是一个循环矩阵.
 于是我们可以将 $P_1$ 写成如下的形式
-\begin{equation}
-    P_1 = C_1 \otimes I_N + I_M \otimes \tilde{C}_2
+\begin{equation}\label{eq:P1}
+    P_1 = C_1 \otimes I_N + I_M \otimes \tilde{K}
 \end{equation}
 我们知道循环矩阵可以写成 DFT 矩阵和对角阵的组合形式, 即
 $$
-  C_1 = F_M^{-1}\Lambda _1F_M, \quad \tilde{C}_2 = F_N^{-1}\Lambda _2F_N
+  C_1 = F_M^{-1}\Lambda _1F_M, \quad \tilde{K} = F_N^{-1}\Lambda _2F_N
 $$
 其中
 $$
   \Lambda _1 = F_Mz_1, \quad \Lambda_2 = F_Nz_2,
 $$
-这里 $z_1, z_2$ 分别代表循环矩阵 $C_1$ 和 $\tilde{C}_2$ 的第一列.
+这里 $z_1, z_2$ 分别代表循环矩阵 $C_1$ 和 $\tilde{K}$ 的第一列.
 于是我们可以进一步得到
 \begin{align*}
     P_1 &= F_M^{-1}\Lambda _1F_M \otimes I_N + I_M \otimes F_N^{-1} \Lambda _2 F_N\\
@@ -1038,13 +1038,167 @@ $\mathrm{vec}(\cdot)$ 表示将矩阵按列排成一个列向量.
 我们的预处理部分所增加的运算量和系数矩阵同向量乘积部分的运算量处于同一个量级,
 这说明我们的预处理子的选择是比较实用的.
 
+\subsection{预处理子的理论分析}
+
+下面我们讨论预处理子 $P_1$ 和系数矩阵 $A$ 的近似程度.
+%因为我们的预处理子是通过对 Toeplitz 矩阵进行的循环近似,
+%所以
+我们首先给出系数矩阵 $A$ 中的两个 Toeplitz 矩阵 $C$和 $T_{\beta}$ 的相关性质.
+% 接着, 我们考察我们的循环近似和 Toeplitz 矩阵之间的相似性, 以说明我们的预处理子的合理性.
+
+从 $C$ 的表达式可以看出, 它完全由 $g_k^{(\alpha)}(k = 1, 2, \dots, M-1)$ 所决定.
+根据 $g_k^{(\alpha)}$ 的定义, 我们有
+$$
+  g_k^{(\alpha)} = (-1)^k \dbinom{\alpha}{k}
+  = \frac{\Gamma (k- \alpha)}{\Gamma (-\alpha)\Gamma (k+1)}.
+$$
+由于 $0<\alpha<1$, 根据 Gamma 函数的性质, 可知 \cite{MT04}
+$$
+  g_0^{(\alpha)} = 1, \quad g_1^{(\alpha)} = -\alpha, 
+  \quad 0 > g_2^{(\alpha)} > g_3^{(\alpha)} > \dots > -1,
+$$
+且
+\begin{equation}\label{eq430}
+    \sum _{k=0}^{\infty} g_k^{(\alpha)} = 0.
+\end{equation}
+另外, 由定理 \ref{thgamma1} 可知, $g_k^{(\alpha)}$ 还满足 \cite{WWS10}:
+$$
+  g_k^{(\alpha)} =
+  \frac{1}{\Gamma(-\alpha) k^{\alpha + 1}} \left( 1 + \mathcal{O} \left( \frac{1}{k}\right)\right),
+$$
+即 $g_k^{(\alpha)}$ 以 $\alpha + 1$ 的速率多项式衰减.
+于是我们就可以得到下面的结论 \cite{CS89}.
+
+\begin{theorem}\label{Th:s-C0}
+  设 $s(C)$ 是 Toeplitz 矩阵 $C$ 的 Strang 循环近似, 
+  则对任意给定的 $\epsilon>0$, 当 $M$ 充分大时有 
+  $$C - s(C) = E_C + S_C,$$
+  其中 $\|E_C\|_1<\epsilon$, $\mathrm{Rank}(S_C)\leq\ell_C$, 
+  这里 $\ell_C$ 是与 $M$ 无关的正整数. 
+  也就是说, $C - s(C)$ 可以写成一个小范数矩阵与一个低秩矩阵之和.
+\end{theorem}
+  
+相类似地, 对于 Toeplitz 矩阵 $T_{\beta}$, 我们也可以得到下面的结论.   
+\begin{theorem}\label{Th:s-T0}
+  设 $s(T_{\beta})$ 是 Toeplitz 矩阵 $T_{\beta}$ 的 Strang 循环近似, 
+  则对任意给定的 $\epsilon>0$, 当 $N$ 充分大时有 
+  $$T_{\beta} - s(T_{\beta}) = E_T + S_T,$$
+  其中 $\|E_T\|_1<\epsilon$, $\|E_T\|_\infty<\epsilon$, $\mathrm{Rank}(S_T)\leq\ell_T$,
+  这里 $\ell_T$ 是与 $N$ 无关的正整数.
+  也就是说, $T_{\beta} - s(T_{\beta})$ 可以写成一个小范数矩阵与一个低秩矩阵之和.  
+\end{theorem}
+
+下面考虑 $\bar{D}_+ T_{\beta}$ 和 $D_+ T_{\beta}$ 之间的差.
+通过直接计算可得
+\begin{align*}
+  \|\bar{D}_+ T_{\beta} - D_+ T_{\beta}\|_1 
+  & \leq \|\bar{D}_+ - D_+\|_1\cdot \|T_{\beta}\|_1 \\
+  & \leq \max _{1 \leq i \leq N} 
+    \left|d_{+}(x_i) - \frac{1}{N} \sum\limits _{i=1}^{N} d_{+}(x_i)\right|
+    \cdot \sum\limits _{k=0}^{N} |g_k^{(\beta)}|\\
+  &\leq 2\beta (d_{+,\max}-d_{+,\min}),
+\end{align*}
+其中 $d_{+,\max}$ 和 $d_{+,\min}$ 分别表示 $d_+(x)$
+在 $[a,b]$ 上的最大值和最小值.
+  
+同理可得
+\begin{align*}
+  \|\bar{D}_- T_{\beta}^{T} - D_- T_{\beta}^{T}\|_1 
+  & \leq \|\bar{D}_- - D_-\|_1\cdot \|T_{\beta}^{T}\|_1 \\
+    &= \| \bar{D}_- - D_- \|_1\cdot \| T_{\beta}\|_\infty\\
+    &\leq \max _{1 \leq i \leq N} 
+     \left|d_{-}(x_i) - \frac{1}{N} \sum\limits _{i=1}^{N} d_{-}(x_i)\right|\cdot
+        \sum\limits_{k=0}^{N} \left|g_k^{(\beta)}\right|\\
+    &\leq 2\beta (d_{-,\max}-d_{-,\min}),
+\end{align*}
+其中 $d_{-,\max}$ 和 $d_{-,\min}$ 分别表示 $d_-(x)$
+在 $[a,b]$ 上的最大值和最小值.
+%
+于是
+\begin{align*}
+  K-\tilde{K}
+  & = \tau \Big(D_+ T_{\beta} - \bar{D}_+ s(T_{\beta})
+         + D_- T_{\beta}^T - \bar{D}_- s(T_{\beta})^T\Big) \\
+  & = \tau \Big(D_+ T_{\beta} - \bar{D}_+ T_{\beta} + \bar{D}_+ T_{\beta} - \bar{D}_+ s(T_{\beta}) \\
+  & \quad\qquad  + D_- T_{\beta}^T - \bar{D}_- T_{\beta}^T + \bar{D}_- T_{\beta}^T + \bar{D}_- s(T_{\beta})^T\Big) \\
+  & = \tau \Big(D_+ T_{\beta} - \bar{D}_+ T_{\beta} + \bar{D}_+ E_T + \bar{D}_+ S_T \\
+  & \quad\qquad  + D_- T_{\beta}^T - \bar{D}_- T_{\beta}^T + \bar{D}_- E_T^T + \bar{D}_- S_T^T)\Big) \\
+  & \triangleq E_K + S_K,
+\end{align*}
+其中 
+\begin{align*}
+  E_K & = \tau \Big(D_+ T_{\beta} - \bar{D}_+ T_{\beta} + \bar{D}_+ E_T
+    + D_- T_{\beta}^T - \bar{D}_- T_{\beta}^T + \bar{D}_- E_T^T)\Big),\\
+  S_K & = \tau \Big(\bar{D}_+ S_T + \bar{D}_- S_T^T)\Big).
+\end{align*}
+由定理 \ref{Th:s-C0} 和 定理 \ref{Th:s-T0} 可知 
+$$ \mathrm{Rank}(S_K)\leq 2\ell_T $$
+且 
+\begin{align*}
+  \|E_K\|_1 
+  & \leq \tau\Big(\|D_+ T_{\beta} - \bar{D}_+ T_{\beta}\|_1
+     + \|\bar{D}_+\|_1\epsilon + \|D_- T_{\beta}^T - \bar{D}_- T_{\beta}^T\|_1
+     + \|\bar{D}_-\|_1\epsilon \Big) \\
+  & \leq 2\beta\tau (d_{+,\max}-d_{+,\min}+d_{-,\max}-d_{-,\min})
+     +\tau(d_{+,\max}+ d_{-,\max})\epsilon.
+\end{align*}
+
+\begin{theorem}
+  设 $P_1$ 和系数矩阵 $A$ 分别由 \eqref{eq:P1} 和 \eqref{eq:A} 所定义,
+  且 $d_{\pm}(x)>0$ 在 $[a,b]$ 上连续, 
+  则对任意 $\epsilon>0$, 存在常数 $c_1$, 使得当 $M,N$ 充分大时有
+  $$ A - P_1 = E_P + S_P,$$
+  其中 $\mathrm{Rank}(S_P)\leq N\ell_C + 2M\ell_T$,
+  $$ \|E_P\|_1 \leq c_1 \epsilon + 2 \beta \tau (d_{+, \max} - d_{+, \min} + d_{-, \min} - d_{-, \min})).
+  $$
+\end{theorem}
+\begin{proof}
+  根据 $A$ 和 $P_1$ 的定义可知
+  \begin{align*}
+    A - P_1
+    & = C \otimes I_N + I_M \otimes K - s(C) \otimes I_N - I_M \otimes \tilde{K}\\
+    & = (C - s(C)) \otimes I_N + I_M \otimes (K - \tilde{K})\\
+%    & = \frac{1}{2\theta} \Big( E_C - S_C) \otimes (\theta I_N + K) \\
+%    &\quad    + (\theta I_M + s(C))\otimes( \tau (D_+ T_{\beta} - \bar{D}_+ s(T_{\beta})
+%         + D_- T_{\beta}^T - \bar{D}_- s(T_{\beta}^T))) \Big)\\
+    & \triangleq E_P + S_P    
+  \end{align*}
+  其中 
+  \begin{align*}
+     E_P & = E_C \otimes I_N + I_M \otimes E_K \\
+     S_P & = S_C \otimes I_N + I_M \otimes S_K.
+   \end{align*}
+   我们有
+   \begin{align*}
+     \|E_P\|_1 
+     & \leq \| E_C \|_1 + \| E_K \|_1 \\
+     & \leq c_1 \epsilon + 2 \beta \tau (d_{+, \max} - d_{+, \min} + d_{-, \min} - d_{-, \min}),
+   \end{align*}   
+   其中
+   $$
+     c_1  = 1 + \tau (d_{+, \max} + d_{-, \max}).
+   $$
+   又 $\mathrm{Rank}(S_C)\leq \ell_C$, $\mathrm{Rank}(S_K)\leq 2\ell_T$, 所以
+   $$ \mathrm{Rank}(S_P)\leq N\ell_C + 2M\ell_T.$$
+   定理结论成立.
+\end{proof}
+
+如果扩散系数是常数, 则 $d_{+,\max}-d_{+,\min}=0$, $d_{-,\max}-d_{-,\min}=0$,
+因此我们有下面的结论.
+\begin{corollary} 
+  设 $d_{\pm}(x)>0$ 是常函数, 则对任意 $\epsilon>0$, 存在常数 $c_1$, 使得当 $M,N$ 充分大时有
+  $$ A - P_1 = E_P + S_P,$$
+  其中 $\mathrm{Rank}(S_P)\leq N\ell_C + 2M\ell_T$,
+  $ \|E_P\|_1 \leq c_1 \epsilon. $
+\end{corollary}
+
 
 \subsection{数值算例} % 后面我们应该把直接法的结果给添加上去
 在下面的数值算例中,
 我们分别使用不带预处理的 GMERS 算法和使用 $P_1$ 作为右预处理的 GMRES 算法进行比较,
-主要比较二者的迭代步数和迭代终止所需要的运行时间.
+主要比较二者迭代终止所需要的时间以及所需要的迭代步数.
 
-在数值算例中, 我们以零向量作为初始迭代向量, 将算法的最大迭代步数设为 500.
+在具体的数值算例中, 我们设零向量为算法的初始迭代向量, 将算法的最大迭代步数设为 500.
 记 $r_0$ 为初始残量, $r_k$ 为算法迭代 $k$ 步之后的残量, 算法的迭代终止条件设为:
 \begin{equation}\nonumber
 \frac{\|r_{k}\|_2}{\|r_0\|_2}<10^{-6}.
@@ -1085,7 +1239,7 @@ u(x, 0) = 0, \qquad x \in [a, b],
 和时间分数阶导数 $\alpha$ 为 $0.3$, $0.5$, $0.7$ 时的情形,
 数值结果见表 \ref{tab3341}, \ref{tab33411} 和 \ref{tab33412}.
 在表格中, “GMRES” 表示不带预处理的 GMRES 方法,
-“GMRES($P_1$)” 表示带预处理子 $P_1$ 的 预处理 GMRES 方法,
+“GMRES($P_1$)” 则表示带预处理子 $P_1$ 的 右预处理 GMRES 方法,
 “CPU” 表示算法迭代终止所需要的时间,
 “Iter” 表示算法迭代终止所需的迭代步数,
 并用 “$-$” 表示算法不收敛或者迭代步数超过最大迭代步数.
@@ -1569,7 +1723,7 @@ $s(C)$ 和 $s(T_{\beta})$ 分别是 Toeplitz 矩阵 $C$ 和 $T_{\beta}$ 的 Stra
 与系数矩阵 $A$ 和向量乘积的运算量处于同一个量级,
 所以该预处理子是比较实用的.
 
-\subsection{预处理子分析}
+\subsection{预处理子的理论分析}
 由文献 \cite{WWS10} 中的结论可知, 矩阵 $K$ 严格对角占优且对角线元素为正,
 %所以 $K + K^T$ 是一个对称正定矩阵.
 %我们假设 $\lambda$ 是 $K$ 的特征值,
