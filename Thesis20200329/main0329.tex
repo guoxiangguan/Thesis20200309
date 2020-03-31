@@ -914,11 +914,37 @@ g_{M-1}^{(\alpha)}& g_{M-2}^{(\alpha)} & \cdots & \cdots & g_1^{(\alpha)} & g_0^
 \end{matrix} \right],
 \end{equation}
 $K$ 有下面的表达式
-\begin{equation}
+\begin{equation}\label{eq:K}
   K = \tau(D_+ T_{\beta} + D_-T_{\beta}^T),
 \end{equation}
 也就是说, 方程组的系数矩阵可以写成两个 Kronecker 乘积之和,
 而且每个 Kronecker 乘积都有 Teoplitz 矩阵, 单位矩阵 和对角矩阵组成.
+
+下面我们考察一下矩阵 $K$ 的性质.
+已知矩阵 $K$ 的形式如 \eqref{eq:K},
+其中
+$D_+ T_{\beta}$ 可以表示为
+$$
+D_+ T_{\beta} = -\left[ \begin{matrix} d_{+,1}g_1^{(\beta)} & d_{+,1}g_0^{(\beta)} & 0 & \cdots & 0 & 0 \\
+d_{+,2}g_2^{(\beta)} & d_{+,2}g_1^{(\beta)} & d_{+,2}g_0^{(\beta)} & 0 & \cdots &  0 \\
+\vdots & \ddots & \ddots & \ddots & \ddots & \vdots\\
+\vdots & \ddots & \ddots & \ddots & \ddots & 0\\
+d_{+,N-1}g_{N-1}^{(\beta)}& \ddots & \ddots & \ddots & d_{+,N-1}g_1^{(\beta)} & d_{+,N-1}g_0^{(\beta)}\\
+d_{+,N}g_{N}^{(\beta)}& d_{+,N}g_{N-1}^{(\beta)} & \cdots & \cdots & d_{+,N}g_2^{(\beta)} & d_{+,N}g_1^{(\beta)}\\
+\end{matrix} \right]
+$$
+由 $g_k^{(\beta)}$ 的性质 \eqref{eq310},
+我们可以得到 
+$$
+\sum _{k=0, k\neq 1}^{N} | g_k^{(\beta)} | < | g_1^{(\beta)} |,
+$$
+故而
+$$
+\sum _{k=0, k\neq 1}^{N} | d_{+, i}g_k^{(\beta)} | < |d_{+, i}g_1^{\beta}|, \quad i = 1,2,\dots,N.
+$$
+可以知道 $D_+ T_{\beta}$ 是严格对角占优矩阵并且主对角线上的元素为正,
+同理 $D_- T_{\beta}^T$ 也是严格对角占优矩阵并且主对角线上的元素为正，
+由矩阵 $K$ 的形式 \eqref{eq:K}, 显然可知矩阵 $K$ 也是严格对角占优矩阵并且主对角线元素为正.
 
 
 \chapter{时间-空间分数阶扩散方程的预处理方法}
@@ -1724,7 +1750,8 @@ $s(C)$ 和 $s(T_{\beta})$ 分别是 Toeplitz 矩阵 $C$ 和 $T_{\beta}$ 的 Stra
 所以该预处理子是比较实用的.
 
 \subsection{预处理子的理论分析}
-由文献 \cite{WWS10} 中的结论可知, 矩阵 $K$ 严格对角占优且对角线元素为正,
+% 由文献 \cite{WWS10} 中的结论可知, 
+由上一章的分析我们知道矩阵 $K$ 严格对角占优且主对角线元素为正,
 %所以 $K + K^T$ 是一个对称正定矩阵.
 %我们假设 $\lambda$ 是 $K$ 的特征值,
 %$v$ 是矩阵 $K$ 的特征值 $\lambda$ 对应的特征向量,
