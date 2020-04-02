@@ -1198,7 +1198,7 @@ $$ \mathrm{Rank}(S_K)\leq 2\ell_T $$
    \begin{align*}
      \|E_P\|_1 
      & \leq \| E_C \|_1 + \| E_K \|_1 \\
-     & \leq c_1 \epsilon + 2 \beta \tau (d_{+, \max} - d_{+, \min} + d_{-, \min} - d_{-, \min}),
+     & \leq c_1 \epsilon + 2 \beta \tau (d_{+, \max} - d_{+, \min} + d_{-, \max} - d_{-, \min}),
    \end{align*}   
    其中
    $$
@@ -1237,7 +1237,7 @@ $$ \mathrm{Rank}(S_K)\leq 2\ell_T $$
 我们考虑下面的时间-空间分数阶扩散方程 % \eqref{eq31}
 \begin{equation}
 \begin{cases}
-\prescript{{\mathrm{C}}}{0}D_t^{\alpha} u(x, t) = d_+(x) \prescript{}{a}D_x^\beta u(x, t) + d_-(x) \prescript{}{x}D_b^\beta u(x, t) + f(x, t), \\
+\prescript{{\mathrm{C}}}{0}{\mathrm{D}}_t^{\alpha} u(x, t) = d_+(x) \prescript{}{a}{\mathrm{D}}_x^\beta u(x, t) + d_-(x) \prescript{}{x}{\mathrm{D}}_b^\beta u(x, t) + f(x, t), \\
 \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad (x, t) \in (a, b) \times (0, T],\\
 u(a, t) = u(b, t) = 0,  \qquad t \in [0, T],\\
 u(x, 0) = 0, \qquad x \in [a, b],
@@ -1347,7 +1347,7 @@ $\alpha$ & $\beta$ & $M = N$ && Iter & CPU && Iter & CPU\\ \midrule
 
 从上面的实验结果中可以看出,
 无论 $\alpha$ 和 $\beta$ 怎么取值,
-如果直接用 GMRES 求解线性方程组的话, 收敛速递非常慢.
+如果直接用 GMRES 求解线性方程组的话, 收敛速度非常慢.
 而使用了预处理子 $P_1$ 后, GMRES 算法的收敛速度大幅增加, 所需时间也大幅减少,
 这说明预处理子 $P_1$ 具有非常好的数值加速效果.
 
@@ -1546,7 +1546,7 @@ $$
 
 由上面的理论分析结果可知, 用 $P_2$ 做预处理子会有比较好的加速效果.
 但在实际计算时, 考虑到预处理子的实用性, 我们对其中的对角矩阵做了常量化近似,
-即实际实用的是预处理子 $\tilde{P}_2$.
+即实际用的是预处理子 $\tilde{P}_2$.
 如果扩散系数 $d_\pm(x)$ 的变化不是很大, 则具有较好的预处理效果.
 当 $d_\pm(x)$ 的变化较大时, 我们可能需要考虑其他近似方法,
 如 \cite{PKNS14} 中提出的近似逆方法等.
@@ -2106,16 +2106,17 @@ Gohberg-Semencul 方法来计算.
 因此我们需要对其做近似.
 这里我们用 $\bar{K} = \tau (\bar{D}_+ T_{\beta} + \bar{D}_- T_{\beta}^T)$ 
 来近似其中的 $K$, 于是我们就得到新的预处理子
-$$ \frac{1}{2 \theta} (\theta I_M + C) \otimes (\theta I_N + \bar{K}). $$
+$$ P_4 = \frac{1}{2 \theta} (\theta I_M + C) \otimes (\theta I_N + \bar{K}). $$
 此时, $\theta I_M + C$ 和 $\theta I_N + \bar{K}$ 都是 Toeplitz 矩阵,
 因此在实际计算时, 我们都可以采用 Gohberg-Semencul 直接求逆的方法.
 预处理部分所需的运算量大约为 $\mathcal{O}(MN\log N + NM\log M)$, 
 与不带预处理的 GMRES 方法的每一个迭代步的运算量相当.
+因此预处理子的实用性得到了保证.
 
 \subsection{数值算例}
 为了便于各个预处理子之间的比较,
-我们还是考虑数值算例 \ref{example-1}.
-采用相同的测试数据, 数值结果见表 \ref{tab4-4-1}, \ref{tab4-4-2} 和 \ref{tab4-4-3},
+还是考虑数值算例 \ref{example-1},
+采用相同的测试参数, 数值结果见表 \ref{tab4-4-1}, \ref{tab4-4-2} 和 \ref{tab4-4-3},
 其中 “GMRES($P_4$)” 表示带预处理子 $P_4$ 的 GMRES 方法.
 由于不带预处理的 GMRES 方法收敛非常慢, 因此我们只列出带预处理的 GMRES 方法的数值结果.
 
@@ -2313,7 +2314,7 @@ $$d_+ = 4e, \quad d_- = 8.5.$$
 \end{equation}
 \end{example}
 
-在数值实验中, 我们分别测试了空间分数阶导数 $\beta$ 为 $1.3$, $1.5$, $1.7$
+在数值实验中, 我们使用了前面提及的全部预处理子并分别测试了空间分数阶导数 $\beta$ 为 $1.3$, $1.5$, $1.7$
 和时间分数阶导数 $\alpha$ 为 $0.3$, $0.5$, $0.7$ 时的情形,
 数值结果见表 \ref{tab4-4-4}, \ref{tab4-4-5} 和 \ref{tab4-4-6}.
 
